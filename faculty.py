@@ -99,12 +99,12 @@ class FacultyParser:
     def save_json(self):
         info = self.__dict__
         del info['raw']
-        with open("./falcutyJson/" + self.preferred_name + ".json", "w", encoding="utf-8") as f:
+        with open("./facultyJson/" + self.preferred_name + ".json", "w", encoding="utf-8") as f:
             print(self.preferred_name)
             f.write(json.dumps(info))
 
     def save_raw(self):
-        with open("./falcutyRawPage/" + self.preferred_name + ".html", "w", encoding="utf-8") as f:
+        with open("./facultyRawPage/" + self.preferred_name + ".html", "w", encoding="utf-8") as f:
             f.write(self.raw)
 
 
