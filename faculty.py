@@ -28,7 +28,6 @@ class FacultyParser:
         return self.preferred_name
 
     def parse(self):
-        # TODO
         """
         What we want:
 
@@ -62,12 +61,15 @@ class FacultyParser:
         # find profile picture
         profile_picture = parser.find_all("div", class_="views-field views-field-field-profile-picture")
         if profile_picture:
-            self.profile_picture = profile_picture[0].find_all("img")[0].get("src")
+            profile_picture = profile_picture[0].find_all("img")
+            if profile_picture:
+                self.profile_picture = profile_picture[0].get("src")
         # find official title
         official_title = parser.find_all(
             "div", class_="field field-name-field-official-title field-type-text field-label-hidden")
         if official_title:
             official_title = official_title[0].text.strip()
+
             self.official_title = official_title
         # find email address
         email_address = parser.find_all(
@@ -98,6 +100,7 @@ class FacultyParser:
         info = self.__dict__
         del info['raw']
         with open("./falcutyJson/" + self.preferred_name + ".json", "w", encoding="utf-8") as f:
+            print(self.preferred_name)
             f.write(json.dumps(info))
 
     def save_raw(self):
@@ -136,10 +139,11 @@ if __name__ == "__main__":
     print(url_todo.__len__())
 
     # following lines crawl all the faculty pages asynchronously
-    async def get_page(session, url):
-        with async_timeout.timeout(10):
-            async with session.get(url[1]) as resp:
-                FacultyParser(url[0], await resp.text())
+    async def get_page(session_func, url_func):
+        # important: if the parsing time is expected to be long, please set a longer timeout
+        with async_timeout.timeout(100):
+            async with session_func.get(url[1]) as resp:
+                FacultyParser(url_func[0], await resp.text())
 
 
     loop = uvloop.new_event_loop()
